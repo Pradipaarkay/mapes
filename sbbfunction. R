@@ -1,0 +1,92 @@
+### Fungsi uji t untuk dua sampel independen
+uji_t_dua_sampel <- function(sampel1, sampel2) {
+  # Menghitung statistik uji t
+  t_stat <- t.test(sampel1, sampel2)$statistic
+  # Menghitung nilai p (p-value)
+  p_value <- t.test(sampel1, sampel2)$p.value
+  # Menghitung mean dan standard deviation dari masing-masing sampel
+  mean_sampel1 <- mean(sampel1)
+  mean_sampel2 <- mean(sampel2)
+  sd_sampel1 <- sd(sampel1)
+  sd_sampel2 <- sd(sampel2)
+  # Mengumpulkan hasil dalam sebuah tibble (data frame)
+  hasil_uji <- tibble(
+    Sampel = c("Sampel 1", "Sampel 2"),
+    Mean = c(mean_sampel1, mean_sampel2),
+    Standard_Deviation = c(sd_sampel1, sd_sampel2),
+    T_Statistik = t_stat,
+    P_Value = p_value,
+    Hasil = ifelse(p_value < 0.05, "Tolak H0", "Gagal Tolak H0")
+  )
+  return(hasil_uji)
+}
+# Contoh penggunaan fungsi uji t
+sampel1 <- c(23, 28, 32, 18, 25)
+sampel2 <- c(30, 35, 27, 22, 29)
+hasil_uji_t <- uji_t_dua_sampel(sampel1, sampel2)
+print(hasil_uji_t)
+
+
+
+### Fungsi uji F untuk dua sampel independen
+uji_f_dua_sampel <- function(sampel1, sampel2) {
+  # Menghitung varians dari masing-masing sampel
+  var_sampel1 <- var(sampel1)
+  var_sampel2 <- var(sampel2)
+  # Menghitung statistik uji F
+  f_stat <- var_sampel1 / var_sampel2
+  # Menghitung derajat kebebasan untuk kedua sampel
+  df1 <- length(sampel1) - 1
+  df2 <- length(sampel2) - 1
+  # Menghitung nilai p (p-value)
+  p_value <- pf(f_stat, df1, df2, lower.tail = FALSE)
+  # Mengumpulkan hasil dalam sebuah tibble (data frame)
+  hasil_uji <- tibble(
+    Sampel = c("Sampel 1", "Sampel 2"),
+    Varians = c(var_sampel1, var_sampel2),
+    Statistik_F = f_stat,
+    Derajat_Kebebasan1 = df1,
+    Derajat_Kebebasan2 = df2,
+    P_Value = p_value,
+    Hasil = ifelse(p_value < 0.05, "Tolak H0", "Gagal Tolak H0")
+  )
+  return(hasil_uji)
+}
+# Contoh penggunaan fungsi uji F
+sampel1 <- c(23, 28, 32, 18, 25)
+sampel2 <- c(30, 35, 27, 22, 29)
+hasil_uji_f <- uji_f_dua_sampel(sampel1, sampel2)
+print(hasil_uji_f)
+
+
+
+### Fungsi uji Z untuk dua sampel independen
+uji_z_dua_sampel <- function(sampel1, sampel2, deviasi_standar1, deviasi_standar2) {
+  # Memastikan kedua sampel numerik
+  sampel1 <- as.numeric(sampel1)
+  sampel2 <- as.numeric(sampel2)
+  # Menghitung rata-rata dari masing-masing sampel
+  rata_rata1 <- mean(sampel1)
+  rata_rata2 <- mean(sampel2)
+  # Menghitung statistik uji Z
+  z_stat <- (rata_rata1 - rata_rata2) / sqrt(deviasi_standar1^2/length(sampel1) + deviasi_standar2^2/length(sampel2))
+  # Menghitung nilai p (p-value)
+  p_value <- 2 * (1 - pnorm(abs(z_stat)))
+  # Mengumpulkan hasil dalam bentuk data frame
+  hasil_uji <- data.frame(
+    Sampel = c("Sampel 1", "Sampel 2"),
+    Rata_Rata = c(rata_rata1, rata_rata2),
+    Deviasi_Standar = c(deviasi_standar1, deviasi_standar2),
+    Z_Statistik = z_stat,
+    P_Value = p_value,
+    Hasil = ifelse(p_value < 0.05, "Tolak H0", "Gagal Tolak H0")
+  )
+  return(hasil_uji)
+}
+# Contoh penggunaan fungsi uji Z untuk dua sampel independen
+sampel1 <- c(25, 30, 28, 32, 27)
+sampel2 <- c(35, 40, 37, 39, 36)
+deviasi_standar1 <- 2.5
+deviasi_standar2 <- 3.0
+hasil_uji_z <- uji_z_dua_sampel(sampel1, sampel2, deviasi_standar1, deviasi_standar2)
+print(hasil_uji_z)
